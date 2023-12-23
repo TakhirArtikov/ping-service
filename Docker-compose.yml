@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: ping_db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ping
+      POSTGRES_USER:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  spring-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ping_service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:

@@ -1,0 +1,82 @@
+<div id="requestsList">
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>IP Address</th>
+            <th>Domain</th>
+            <th>Check Date</th>
+            <th>Test Status</th>
+            <th>Ping Result</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="pingDto : ${pingDtoList}">
+            <td th:text="${pingDto.id}"></td>
+            <td th:text="${pingDto.ipAddress}"></td>
+            <td th:text="${pingDto.domain}"></td>
+            <td th:date="${pingDto.checkDate}"></td>
+            <td th:int="${pingDto.testStatus}"></td>
+            <td th:text="${pingDto.pingResult}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div id="paginationButtons">
+    <button id="prevPageButton">Previous Page</button>
+    <button id="nextPageButton">Next Page</button>
+</div>
+
+<script th:inline="javascript">
+    const requestsList = document.getElementById('requestsList');
+    const tableBody = document.getElementById('tableBody');
+    const prevPageButton = document.getElementById('prevPageButton');
+    const nextPageButton = document.getElementById('nextPageButton');
+    let currentPage = 0;
+    var totalPages = [[${totalPages}]];
+
+    function loadRequests(page) {
+        fetch(`/api/v1/ping/paginated/${page}`)
+            .then(response => response.json())
+            .then(data => {
+                tableBody.innerHTML = '';
+
+                data.forEach(pingDto => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${pingDto.id}</td>
+                        <td>${pingDto.ipAddress}</td>
+                        <td>${pingDto.domain}</td>
+                        <td>${pingDto.checkDate}</td>
+                        <td>${pingDto.testStatus}</td>
+                        <td>${pingDto.pingResult}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                currentPage = page;
+                prevPageButton.disabled = currentPage === 0;
+                nextPageButton.disabled = currentPage === totalPages - 1;
+            })
+            .catch(error => {
+                console.error('Error loading data:', error);
+            });
+    }
+
+    prevPageButton.addEventListener('click', () => {
+        if (currentPage > 0) {
+            currentPage--;
+            loadRequests(currentPage);
+        }
+    });
+
+    nextPageButton.addEventListener('click', () => {
+        if (currentPage < totalPages - 1) {
+            currentPage++;
+            loadRequests(currentPage);
+        }
+    });
+
+    loadRequests(currentPage);
+</script>

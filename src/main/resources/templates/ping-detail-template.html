@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ping Search Results</title>
+    <!-- Add your stylesheets, scripts, and other resources here -->
+</head>
+<body>
+<h1>Ping Search Results</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>IP Address</th>
+        <th>Domain</th>
+        <th>Check Date</th>
+        <th>Test Status</th>
+        <th>Ping Result</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="pingDto : ${pingDtoList}">
+        <td th:text="${pingDto.id}"></td>
+        <td th:text="${pingDto.ipAddress}"></td>
+        <td th:text="${pingDto.domain}"></td>
+        <td th:text="${pingDto.checkDate}"></td>
+        <td th:text="${pingDto.testStatus}"></td>
+        <td th:text="${pingDto.pingResult}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
